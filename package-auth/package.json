@@ -1,12 +1,12 @@
 {
   "name": "@blackrelay/package-auth",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "",
   "main": "dist/index.js",
   "types": "src/index.ts",
   "scripts": {
-    "build": "tsc",
-    "publish": "npm run build && npm publish --access public",
+    "build": "sh ./scripts/build.sh",
+    "publish:prod": "sh ./scripts/publish.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

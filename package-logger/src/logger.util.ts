@@ -1,11 +1,12 @@
 import * as winston from 'winston';
 import * as path from 'path';
-import * as _ from 'lodash';
 import { format } from 'winston';
 import { asyncLocalStorage } from '@blackrelay/package-als';
 import { AnyObject, ErrorLogPattern } from './type';
 import { NodeEnv, LogLevels } from './variables';
 import { StreamOptions } from 'morgan';
+
+const get = require('lodash.get');
 
 const defaultLogPattern = {
   sourceIP: null,
@@ -51,7 +52,7 @@ function customFormat() {
       ...(asyncLocalStorage.getStore() as AnyObject),
       message: {
         ...info.message,
-        function: _.get(info, 'message.function', ''),
+        function: get(info, 'message.function', ''),
       },
     };
   });
@@ -86,7 +87,7 @@ export const logger = (() => {
   function _logHelper(level: LogLevels) {
     return (detail: AnyObject | string) => {
       const stackTraces = `${new Error().stack || ''}`.split(/\sat\s/);
-      const path = _.get(stackTraces, `${[stackTraces.length - 1]}`, '');
+      const path = get(stackTraces, `${[stackTraces.length - 1]}`, '');
       return winstonLogger[level]({
         message: { detail, function: path },
         ...defaultLogPattern,

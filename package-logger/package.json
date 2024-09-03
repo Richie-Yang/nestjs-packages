@@ -1,13 +1,14 @@
 {
   "name": "@blackrelay/package-logger",
-  "version": "1.0.2",
+  "version": "1.0.8",
   "description": "",
   "main": "dist/index.js",
   "types": "src/index.ts",
   "scripts": {
-    "build": "tsc",
-    "publish": "npm run build && npm publish --access public",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "sh ./scripts/build.sh",
+    "publish:prod": "sh ./scripts/publish.sh",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
@@ -15,12 +16,14 @@
   "dependencies": {
     "@blackrelay/package-als": "^1.0.5",
     "@nestjs/common": "^10.3.10",
+    "lodash.get": "^4.4.2",
     "morgan": "^1.10.0",
     "winston": "^3.13.1"
   },
   "devDependencies": {
-    "@types/lodash": "^4.17.7",
+    "@types/lodash.get": "^4.4.9",
     "@types/node": "^20.14.12",
+    "husky": "^9.1.5",
     "typescript": "^5.5.4"
   }
 }
