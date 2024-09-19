@@ -1,12 +1,12 @@
 {
   "name": "@blackrelay/package-error",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "",
   "main": "dist/index.js",
   "types": "src/index.ts",
   "scripts": {
     "build": "sh ./scripts/build.sh",
-    "publish:prod": "sh ./scripts/publish.sh",
+    "publish:prod": "sh ./scripts/build.sh && sh ./scripts/publish.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

@@ -1,20 +1,20 @@
 {
   "name": "@blackrelay/package-auth",
-  "version": "1.0.20",
+  "version": "1.0.25",
   "description": "",
   "main": "dist/index.js",
   "types": "src/index.ts",
   "scripts": {
     "build": "sh ./scripts/build.sh",
-    "publish:prod": "sh ./scripts/publish.sh",
+    "publish:prod": "sh ./scripts/build.sh && sh ./scripts/publish.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@blackrelay/package-error": "^1.0.2",
-    "@blackrelay/package-redis": "^1.0.13",
+    "@blackrelay/package-error": "^1.0.5",
+    "@blackrelay/package-redis": "^1.0.19",
     "@nestjs/common": "^10.3.10",
     "http-status-codes": "^2.3.0"
   },

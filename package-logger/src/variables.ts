@@ -1,8 +1,9 @@
 export enum NodeEnv {
-  DEV = 'dev',
   TEST = 'test',
-  PROD = 'prod',
+  LOCAL = 'local',
+  DEV = 'dev',
   PROD_LIKE = 'prodLike',
+  PROD = 'prod',
 }
 
 export enum LogLevels {

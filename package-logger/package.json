@@ -1,29 +1,28 @@
 {
   "name": "@blackrelay/package-logger",
-  "version": "1.0.8",
+  "version": "1.0.13",
   "description": "",
   "main": "dist/index.js",
   "types": "src/index.ts",
   "scripts": {
     "build": "sh ./scripts/build.sh",
-    "publish:prod": "sh ./scripts/publish.sh",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "husky"
+    "publish:prod": "sh ./scripts/build.sh && sh ./scripts/publish.sh",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@blackrelay/package-als": "^1.0.5",
-    "@nestjs/common": "^10.3.10",
-    "lodash.get": "^4.4.2",
+    "@aws-sdk/client-s3": "^3.654.0",
+    "@blackrelay/package-als": "^1.0.8",
+    "@nestjs/common": "^10.4.1",
+    "lodash": "^4.17.21",
     "morgan": "^1.10.0",
-    "winston": "^3.13.1"
+    "winston": "^3.14.2"
   },
   "devDependencies": {
-    "@types/lodash.get": "^4.4.9",
+    "@types/lodash": "^4.17.7",
     "@types/node": "^20.14.12",
-    "husky": "^9.1.5",
     "typescript": "^5.5.4"
   }
 }

@@ -5,16 +5,18 @@ import {
   OnModuleDestroy,
   OnModuleInit,
 } from '@nestjs/common';
-import { logger } from '@blackrelay/package-logger';
+import { LoggerService } from '@blackrelay/package-logger';
 
 type AnyObject<T = any> = {
   [key: string]: T;
 };
+
 enum NodeEnv {
-  DEV = 'dev',
   TEST = 'test',
-  PROD = 'prod',
+  LOCAL = 'local',
+  DEV = 'dev',
   PROD_LIKE = 'prodLike',
+  PROD = 'prod',
 }
 
 export const NODE_ENV_KEY = 'NODE_ENV';
@@ -35,6 +37,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   };
 
   constructor(
+    @Inject(LoggerService) private logger: LoggerService,
     @Inject(NODE_ENV_KEY) private nodeEnv: string,
     @Inject(REDIS_URL_KEY) private redisUrl: string,
   ) {
@@ -42,39 +45,39 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       url: this.redisUrl,
     };
 
-    if (this.nodeEnv !== NodeEnv.DEV) {
-      Object.assign(redisConfig, {
-        socket: {
-          tls: true,
-        },
-      });
+    if (this.nodeEnv !== NodeEnv.LOCAL) {
+      // Object.assign(redisConfig, {
+      //   socket: {
+      //     tls: true,
+      //   },
+      // });
     }
 
     this.client = createClient(redisConfig);
 
     this.client.on('error', (error) => {
-      logger.info(`redis error occurs: ${error}`);
+      this.logger.log(`redis error occurs: ${error}`);
       process.exit(1);
     });
 
     this.client.on('connect', () => {
-      logger.info('connected to Redis');
+      this.logger.log('connected to Redis');
     });
   }
 
   async onModuleInit() {
     await this.client.connect();
 
-    logger.info(`Redis URL: ${this.redisUrl}`);
+    this.logger.log(`Redis URL: ${this.redisUrl}`);
     if (!this.client.isReady) {
-      logger.info('failed to connect to Redis');
+      this.logger.log('failed to connect to Redis');
       process.exit(1);
     }
   }
 
   async onModuleDestroy() {
     await this.client.disconnect();
-    logger.info(`Redis is ready: ${this.client.isReady}`);
+    this.logger.log(`Redis is ready: ${this.client.isReady}`);
   }
 
   async set(key: string, value: AnyObject | string, ttl: number) {
@@ -84,7 +87,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       try {
         stringifiedValue = JSON.stringify(value);
       } catch (err) {
-        logger.error('json stringify error');
+        this.logger.error('json stringify error');
       }
     } else stringifiedValue = value;
 
@@ -98,7 +101,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     try {
       parsedValue = JSON.parse(value);
     } catch (err) {
-      logger.info('json parse error');
+      this.logger.log('json parse error');
     }
     return parsedValue;
   }

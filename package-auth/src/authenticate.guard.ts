@@ -4,11 +4,11 @@ import {
   Inject,
   Injectable,
 } from '@nestjs/common';
-import { throwError, ModuleCode, ModuleError } from '@blackrelay/package-error';
 import * as _ from 'lodash';
+import { StatusCodes } from 'http-status-codes';
+import { ErrorService } from '@blackrelay/package-error';
 
 import { AuthenticateService } from './authenticate.service';
-import { StatusCodes } from 'http-status-codes';
 
 export type AnyObject<T = any> = {
   [key: string]: T;
@@ -21,6 +21,8 @@ export class AuthenticateGuard implements CanActivate {
   static apiOption = { name: 'Authorization', required: true };
 
   constructor(
+    @Inject(ErrorService)
+    private err: ErrorService,
     @Inject(AuthenticateService)
     private authenticateService: AuthenticateService,
   ) {}
@@ -33,13 +35,14 @@ export class AuthenticateGuard implements CanActivate {
 
     const userData = await this.authenticateService.getUser(token);
     if (!userData) {
-      throwError(ModuleError[ModuleCode.UNAUTHORIZED], {
+      this.err.throwError(this.err.ModuleCode.UNAUTHORIZED, {
         customStatusCode: StatusCodes.UNAUTHORIZED,
       });
       return false;
     }
 
     request.user = userData;
+    request.token = token;
     return true;
   }
 }

@@ -1,6 +1,2 @@
-export {
-  logger,
-  requestLogger,
-  errorLogger,
-  getMorganFormat,
-} from './logger.util';
+export { LoggerModule } from './logger.module';
+export { LoggerService } from './logger.service';

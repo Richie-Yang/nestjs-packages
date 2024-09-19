@@ -1,1 +1,2 @@
-export { throwError, ModuleError, ModuleCode } from './error.util';
+export { ErrorModule } from './error.module';
+export { ErrorService } from './error.service';
