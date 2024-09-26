@@ -26,7 +26,13 @@ export const REDIS_URL_KEY = 'REDIS_URL';
 export class RedisService implements OnModuleInit, OnModuleDestroy {
   private client: RedisClientType;
   public REDIS_KEY = {
-    SESSION: (token: string) => `SESSION:${token}`,
+    SESSION: (() => {
+      const PREFIX = 'SESSION';
+      return {
+        AUTH_FRONT: (token: string) => `${PREFIX}:AUTH_FRONT:${token}`,
+        AUTH_BACK: (token: string) => `${PREFIX}:AUTH_BACK:${token}`,
+      };
+    })(),
     AUTH: (() => {
       const PREFIX = 'AUTH';
       return {

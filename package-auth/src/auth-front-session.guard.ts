@@ -5,10 +5,10 @@ import {
   Injectable,
 } from '@nestjs/common';
 import * as _ from 'lodash';
-import { StatusCodes } from 'http-status-codes';
-import { ErrorService } from '@blackrelay/package-error';
+import { ErrorService, ModuleCode } from '@blackrelay/package-error';
 
 import { AuthenticateService } from './authenticate.service';
+import { RedisService } from '@blackrelay/package-redis';
 
 export type AnyObject<T = any> = {
   [key: string]: T;
@@ -17,7 +17,7 @@ export type AnyObject<T = any> = {
 const TOKEN_PREFIX = 'Bearer';
 
 @Injectable()
-export class AuthenticateGuard implements CanActivate {
+export class AuthFrontSessionGuard implements CanActivate {
   static apiOption = { name: 'Authorization', required: true };
 
   constructor(
@@ -25,6 +25,8 @@ export class AuthenticateGuard implements CanActivate {
     private err: ErrorService,
     @Inject(AuthenticateService)
     private authenticateService: AuthenticateService,
+    @Inject(RedisService)
+    private redisService: RedisService,
   ) {}
 
   async canActivate(context: ExecutionContext) {
@@ -33,11 +35,10 @@ export class AuthenticateGuard implements CanActivate {
     const bearerToken = _.get(request, 'headers.authorization') || '';
     const token = _.get(bearerToken.split(TOKEN_PREFIX), '[1]', '').trim();
 
-    const userData = await this.authenticateService.getUser(token);
+    const key = this.redisService.REDIS_KEY.SESSION.AUTH_FRONT(token);
+    const userData = await this.authenticateService.getSession(key);
     if (!userData) {
-      this.err.throwError(this.err.ModuleCode.UNAUTHORIZED, {
-        customStatusCode: StatusCodes.UNAUTHORIZED,
-      });
+      this.err.throwError(this.err.ModuleError[ModuleCode.UNAUTHORIZED]);
       return false;
     }
 

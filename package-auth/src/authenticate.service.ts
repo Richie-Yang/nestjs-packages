@@ -5,8 +5,7 @@ import { Inject, Injectable } from '@nestjs/common';
 export class AuthenticateService {
   constructor(@Inject(RedisService) private redisService: RedisService) {}
 
-  async getUser(token: string) {
-    const key = this.redisService.REDIS_KEY.SESSION(token);
+  async getSession(key: string) {
     return this.redisService.get(key);
   }
 }

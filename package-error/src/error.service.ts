@@ -12,23 +12,23 @@ export type ErrorCodeModule = {
   [key: string]: CodeMessage;
 };
 
+export enum ModuleCode {
+  UNAUTHORIZED = 'UNAUTHORIZED',
+}
+
 @Injectable()
 export class ErrorService {
   constructor() {}
 
-  public ModuleCode: { [key: string]: string } = {
-    UNAUTHORIZED: 'UNAUTHORIZED',
-  };
-
   public ModuleError: ErrorCodeModule = {
-    [this.ModuleCode.UNAUTHORIZED]: {
+    [ModuleCode.UNAUTHORIZED]: {
       message: 'unauthorized',
       errorCode: 'M00000',
     },
   };
 
   public throwError(
-    errorCodeModule: string,
+    codeMessage: CodeMessage,
     options?: {
       customStatusCode?: StatusCodes;
       customMessage?: string | string[];
@@ -36,27 +36,9 @@ export class ErrorService {
   ) {
     const error = {
       status: options?.customStatusCode || StatusCodes.BAD_REQUEST,
-      errorCode: _.get(errorCodeModule, 'errorCode'),
-      message: options?.customMessage || _.get(errorCodeModule, 'message', ''),
+      errorCode: _.get(codeMessage, 'errorCode'),
+      message: options?.customMessage || _.get(codeMessage, 'message', ''),
     };
     throw new HttpException(error, error.status);
   }
 }
-
-// class newErrorService extends ErrorService {
-//   constructor() {
-//     super();
-//   }
-//   public ModuleCode: { [key: string]: string } = {
-//     ...this.ModuleCode,
-//     NEW_ERROR: 'NEW_ERROR',
-//   };
-
-//   public ModuleError: ErrorCodeModule = {
-//     ...this.ModuleError,
-//     [this.ModuleCode.NEW_ERROR]: {
-//       message: 'new error',
-//       errorCode: 'M00001',
-//     },
-//   };
-// }

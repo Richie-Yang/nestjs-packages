@@ -1,6 +1,7 @@
 import { DynamicModule, Global, Module } from '@nestjs/common';
-import { AuthenticateGuard } from './authenticate.guard';
+import { AuthFrontSessionGuard } from './auth-front-session.guard';
 import { AuthenticateService } from './authenticate.service';
+import { AuthBackSessionGuard } from './auth-back-session.guard';
 
 @Global()
 @Module({})
@@ -10,15 +11,23 @@ export class AuthModule {
       module: AuthModule,
       providers: [
         {
-          provide: AuthenticateGuard,
-          useClass: AuthenticateGuard,
+          provide: AuthFrontSessionGuard,
+          useClass: AuthFrontSessionGuard,
+        },
+        {
+          provide: AuthBackSessionGuard,
+          useClass: AuthBackSessionGuard,
         },
         {
           provide: AuthenticateService,
           useClass: AuthenticateService,
         },
       ],
-      exports: [AuthenticateGuard, AuthenticateService],
+      exports: [
+        AuthFrontSessionGuard,
+        AuthBackSessionGuard,
+        AuthenticateService,
+      ],
     };
   }
 }

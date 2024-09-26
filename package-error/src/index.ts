@@ -1,2 +1,7 @@
 export { ErrorModule } from './error.module';
-export { ErrorService } from './error.service';
+export {
+  ErrorService,
+  ModuleCode,
+  ErrorCodeModule,
+  CodeMessage,
+} from './error.service';

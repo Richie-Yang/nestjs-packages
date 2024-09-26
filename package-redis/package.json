@@ -1,6 +1,6 @@
 {
   "name": "@blackrelay/package-redis",
-  "version": "1.0.19",
+  "version": "1.0.21",
   "description": "",
   "main": "dist/index.js",
   "types": "src/index.ts",
