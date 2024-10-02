@@ -40,6 +40,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
         RESET_KEY: (token: string) => `${PREFIX}:RESET_PASSWORD:${token}`,
       };
     })(),
+    ORDER: (orderId: string) => `ORDER:${orderId}`,
   };
 
   constructor(

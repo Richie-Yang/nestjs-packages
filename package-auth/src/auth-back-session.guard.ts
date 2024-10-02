@@ -9,6 +9,7 @@ import { ErrorService, ModuleCode } from '@blackrelay/package-error';
 
 import { AuthenticateService } from './authenticate.service';
 import { RedisService } from '@blackrelay/package-redis';
+import { AuthSessionType } from './variables';
 
 export type AnyObject<T = any> = {
   [key: string]: T;
@@ -42,8 +43,9 @@ export class AuthBackSessionGuard implements CanActivate {
       return false;
     }
 
-    request.user = userData;
-    request.token = token;
+    request.authData = userData;
+    request.authAccessToken = token;
+    request.authSessionType = AuthSessionType.BACK;
     return true;
   }
 }
