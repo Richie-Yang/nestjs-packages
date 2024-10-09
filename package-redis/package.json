@@ -1,6 +1,6 @@
 {
   "name": "@blackrelay/package-redis",
-  "version": "1.0.22",
+  "version": "1.0.24",
   "description": "",
   "main": "dist/index.js",
   "types": "src/index.ts",
@@ -13,7 +13,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@blackrelay/package-logger": "^1.0.12",
     "@nestjs/common": "^10.3.10",
     "redis": "^4.6.15"
   },

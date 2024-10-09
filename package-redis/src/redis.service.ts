@@ -5,7 +5,6 @@ import {
   OnModuleDestroy,
   OnModuleInit,
 } from '@nestjs/common';
-import { LoggerService } from '@blackrelay/package-logger';
 
 type AnyObject<T = any> = {
   [key: string]: T;
@@ -44,7 +43,6 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   };
 
   constructor(
-    @Inject(LoggerService) private logger: LoggerService,
     @Inject(NODE_ENV_KEY) private nodeEnv: string,
     @Inject(REDIS_URL_KEY) private redisUrl: string,
   ) {
@@ -63,28 +61,28 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     this.client = createClient(redisConfig);
 
     this.client.on('error', (error) => {
-      this.logger.log(`redis error occurs: ${error}`);
+      console.log(`Redis: error occurs and detail is ${error}`);
       process.exit(1);
     });
 
     this.client.on('connect', () => {
-      this.logger.log('connected to Redis');
+      console.log('Redis: successfully connected to Redis');
     });
   }
 
   async onModuleInit() {
     await this.client.connect();
 
-    this.logger.log(`Redis URL: ${this.redisUrl}`);
+    console.log(`Redis: URL is ${this.redisUrl}`);
     if (!this.client.isReady) {
-      this.logger.log('failed to connect to Redis');
+      console.log('Redis: failed to connect to Redis');
       process.exit(1);
     }
   }
 
   async onModuleDestroy() {
     await this.client.disconnect();
-    this.logger.log(`Redis is ready: ${this.client.isReady}`);
+    console.log(`Redis: disconnected and status is ${this.client.isReady}`);
   }
 
   async set(key: string, value: AnyObject | string, ttl: number) {
@@ -94,7 +92,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       try {
         stringifiedValue = JSON.stringify(value);
       } catch (err) {
-        this.logger.error('json stringify error');
+        console.log(err);
       }
     } else stringifiedValue = value;
 
@@ -108,7 +106,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     try {
       parsedValue = JSON.parse(value);
     } catch (err) {
-      this.logger.log('json parse error');
+      console.log(err);
     }
     return parsedValue;
   }

@@ -14,6 +14,11 @@ export type ErrorCodeModule = {
 
 export enum ModuleCode {
   UNAUTHORIZED = 'UNAUTHORIZED',
+  INVALID_PAYLOAD = 'INVALID_PAYLOAD',
+  JSON_STRINGIFY_ERROR = 'JSON_STRINGIFY_ERROR',
+  JSON_PARSE_ERROR = 'JSON_PARSE_ERROR',
+  DECRYPT_KEY_NOT_FOUND = 'DECRYPT_KEY_NOT_FOUND',
+  LOCALE_NOT_FOUND = 'LOCALE_NOT_FOUND',
 }
 
 @Injectable()
@@ -24,6 +29,26 @@ export class ErrorService {
     [ModuleCode.UNAUTHORIZED]: {
       message: 'unauthorized',
       errorCode: 'M00000',
+    },
+    [ModuleCode.INVALID_PAYLOAD]: {
+      message: 'invalid payload',
+      errorCode: 'M00001',
+    },
+    [ModuleCode.JSON_STRINGIFY_ERROR]: {
+      message: 'json stringify error',
+      errorCode: 'M00002',
+    },
+    [ModuleCode.JSON_PARSE_ERROR]: {
+      message: 'json parse error',
+      errorCode: 'M00003',
+    },
+    [ModuleCode.DECRYPT_KEY_NOT_FOUND]: {
+      message: 'decrypt key not found',
+      errorCode: 'M00004',
+    },
+    [ModuleCode.LOCALE_NOT_FOUND]: {
+      message: 'locale not found',
+      errorCode: 'M00005',
     },
   };
 

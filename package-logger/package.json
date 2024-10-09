@@ -1,6 +1,6 @@
 {
   "name": "@blackrelay/package-logger",
-  "version": "1.0.13",
+  "version": "1.0.17",
   "description": "",
   "main": "dist/index.js",
   "types": "src/index.ts",
@@ -18,7 +18,8 @@
     "@nestjs/common": "^10.4.1",
     "lodash": "^4.17.21",
     "morgan": "^1.10.0",
-    "winston": "^3.14.2"
+    "winston": "^3.14.2",
+    "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
     "@types/lodash": "^4.17.7",

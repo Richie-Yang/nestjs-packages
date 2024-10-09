@@ -6,3 +6,13 @@ export type ErrorLogPattern = {
   stack: string[];
   detail: string;
 };
+
+export type LoggerOptions = {
+  local?: {
+    dirname: string;
+    filename?: string;
+    datePattern?: string;
+    maxSize?: string;
+    maxFiles?: string;
+  };
+};

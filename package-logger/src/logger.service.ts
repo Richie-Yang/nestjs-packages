@@ -5,13 +5,20 @@ import {
 } from '@nestjs/common';
 import * as winston from 'winston';
 import { format } from 'winston';
-
-import * as _ from 'lodash';
 import { StreamOptions } from 'morgan';
+import * as _ from 'lodash';
+
 import { LogLevels, NodeEnv } from './variables';
-import { AnyObject, ErrorLogPattern } from './type';
+import { AnyObject, ErrorLogPattern, LoggerOptions } from './type';
 import { AsyncLocalStorage } from '@blackrelay/package-als';
-import { NODE_ENV_KEY, APP_NAME_KEY, HOST_NAME_KEY } from './const';
+import {
+  NODE_ENV_KEY,
+  APP_NAME_KEY,
+  HOST_NAME_KEY,
+  LOGGER_OPTIONS_KEY,
+} from './const';
+
+import 'winston-daily-rotate-file';
 
 @Injectable()
 export class LoggerService implements NestLoggerService {
@@ -25,6 +32,7 @@ export class LoggerService implements NestLoggerService {
     @Inject(NODE_ENV_KEY) public nodeEnv: string,
     @Inject(APP_NAME_KEY) public appName: string,
     @Inject(HOST_NAME_KEY) public hostName: string,
+    @Inject(LOGGER_OPTIONS_KEY) public options?: LoggerOptions,
   ) {
     if (this.nodeEnv === NodeEnv.DEV) {
       this.transports.push(
@@ -37,6 +45,22 @@ export class LoggerService implements NestLoggerService {
           //   filename: path.join(__dirname, '../../log/combined.log'),
           // }),
         ],
+      );
+    }
+
+    if (this.options?.local) {
+      const { dirname, filename, datePattern, maxSize, maxFiles } =
+        this.options.local;
+      const fileTransportOptions = {
+        dirname,
+        datePattern: datePattern || 'YYYY-MM-DD',
+        filename: filename || '%DATE%-combined.log',
+        maxSize: maxSize || '10m',
+        maxFiles: maxFiles || '30d',
+      };
+
+      this.transports.push(
+        new winston.transports.DailyRotateFile(fileTransportOptions),
       );
     }
 

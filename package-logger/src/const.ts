@@ -2,6 +2,7 @@ export const NODE_ENV_KEY = 'NODE_ENV';
 export const REDIS_URL_KEY = 'REDIS_URL';
 export const APP_NAME_KEY = 'APP_NAME';
 export const HOST_NAME_KEY = 'HOST_NAME';
+export const LOGGER_OPTIONS_KEY = 'LOGGER_OPTIONS';
 
 export const AWS_ACCESS_KEY_ID = 'AWS_ACCESS_KEY_ID';
 export const AWS_SECRET_ACCESS_KEY = 'AWS_SECRET_ACCESS_KEY';
