@@ -1,6 +1,6 @@
 {
   "name": "@blackrelay/package-logger",
-  "version": "1.0.17",
+  "version": "1.0.21",
   "description": "",
   "main": "dist/index.js",
   "types": "src/index.ts",
@@ -15,11 +15,13 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.654.0",
     "@blackrelay/package-als": "^1.0.8",
+    "@fluent-org/logger": "^1.0.10",
     "@nestjs/common": "^10.4.1",
     "lodash": "^4.17.21",
     "morgan": "^1.10.0",
     "winston": "^3.14.2",
-    "winston-daily-rotate-file": "^5.0.0"
+    "winston-daily-rotate-file": "^5.0.0",
+    "winston-transport": "^4.8.0"
   },
   "devDependencies": {
     "@types/lodash": "^4.17.7",

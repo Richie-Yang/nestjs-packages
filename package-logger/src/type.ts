@@ -15,4 +15,10 @@ export type LoggerOptions = {
     maxSize?: string;
     maxFiles?: string;
   };
+  fluentd?: {
+    tagPrefix: string;
+    host: string;
+    port: number;
+    timeout: number;
+  };
 };

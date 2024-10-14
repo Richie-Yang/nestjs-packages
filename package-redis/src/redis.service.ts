@@ -114,4 +114,21 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   async del(key: string) {
     return this.client.del(key);
   }
+
+  async getWithWildcard(pattern: string) {
+    const result: { [key: string]: any } = {};
+
+    for await (const key of this.client.scanIterator({ MATCH: pattern })) {
+      const value = await this.client.get(key);
+      if (value) {
+        try {
+          result[key] = JSON.parse(value);
+        } catch (err) {
+          console.log(`Error parsing value for key ${key}:`, err);
+          result[key] = value;
+        }
+      }
+    }
+    return result;
+  }
 }

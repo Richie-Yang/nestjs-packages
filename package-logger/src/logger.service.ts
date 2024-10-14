@@ -7,6 +7,7 @@ import * as winston from 'winston';
 import { format } from 'winston';
 import { StreamOptions } from 'morgan';
 import * as _ from 'lodash';
+import { FluentClient, FluentClientOptions } from '@fluent-org/logger';
 
 import { LogLevels, NodeEnv } from './variables';
 import { AnyObject, ErrorLogPattern, LoggerOptions } from './type';
@@ -16,9 +17,11 @@ import {
   APP_NAME_KEY,
   HOST_NAME_KEY,
   LOGGER_OPTIONS_KEY,
+  MASK_KEYWORD_LIST,
 } from './const';
 
 import 'winston-daily-rotate-file';
+import { FluentTransport } from './plugins';
 
 @Injectable()
 export class LoggerService implements NestLoggerService {
@@ -26,6 +29,7 @@ export class LoggerService implements NestLoggerService {
   public defaultLogger: winston.Logger;
   public errorLogger: winston.Logger;
   public requestLogger: StreamOptions;
+  public fluentdLogger: FluentClient;
 
   constructor(
     public asyncLocalStorage: AsyncLocalStorage<AnyObject>,
@@ -58,9 +62,19 @@ export class LoggerService implements NestLoggerService {
         maxSize: maxSize || '10m',
         maxFiles: maxFiles || '30d',
       };
-
       this.transports.push(
         new winston.transports.DailyRotateFile(fileTransportOptions),
+      );
+    }
+
+    if (this.options?.fluentd) {
+      const { host, port, timeout, tagPrefix } = this.options.fluentd;
+      const fluentdOptions: FluentClientOptions = {
+        socket: { host, port, timeout },
+      };
+      this.fluentdLogger = new FluentClient(tagPrefix, fluentdOptions);
+      this.transports.push(
+        new FluentTransport({ fluentClient: this.fluentdLogger }),
       );
     }
 
@@ -142,11 +156,27 @@ export class LoggerService implements NestLoggerService {
   }
 
   public morganFormat(tokens, req, res) {
+    const maskSensitiveData = (obj: any): any => {
+      if (_.isArray(obj)) return obj.map((item) => maskSensitiveData(item));
+      if (_.isObject(obj) && !_.isArray(obj)) {
+        return _.mapValues(obj, (value, key) => {
+          if (MASK_KEYWORD_LIST.includes(key)) return '***';
+          return maskSensitiveData(value);
+        });
+      }
+      return obj;
+    };
+    const body =
+      this.nodeEnv !== NodeEnv.PROD
+        ? req.body || {}
+        : maskSensitiveData(req.body || {});
+
     return JSON.stringify({
       sourceIP: tokens['remote-addr'](req, res),
       method: tokens.method(req, res),
       url: tokens.url(req, res),
       headers: req.headers,
+      body,
       referrers: tokens.referrer(req, res),
       userAgent: tokens['user-agent'](req, res),
       status: tokens.status(req, res),
