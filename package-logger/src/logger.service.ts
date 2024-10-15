@@ -167,7 +167,7 @@ export class LoggerService implements NestLoggerService {
       return obj;
     };
     const body =
-      this.nodeEnv !== NodeEnv.PROD
+      _.get(req, 'nodeEnv', null) !== NodeEnv.PROD
         ? req.body || {}
         : maskSensitiveData(req.body || {});
 
