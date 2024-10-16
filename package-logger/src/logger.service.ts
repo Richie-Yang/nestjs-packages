@@ -53,17 +53,8 @@ export class LoggerService implements NestLoggerService {
     }
 
     if (this.options?.local) {
-      const { dirname, filename, datePattern, maxSize, maxFiles } =
-        this.options.local;
-      const fileTransportOptions = {
-        dirname,
-        datePattern: datePattern || 'YYYY-MM-DD',
-        filename: filename || '%DATE%-combined.log',
-        maxSize: maxSize || '10m',
-        maxFiles: maxFiles || '30d',
-      };
       this.transports.push(
-        new winston.transports.DailyRotateFile(fileTransportOptions),
+        new winston.transports.DailyRotateFile(this.options.local),
       );
     }
 

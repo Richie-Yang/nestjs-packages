@@ -40,6 +40,12 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       };
     })(),
     ORDER: (orderId: string) => `ORDER:${orderId}`,
+    PAYPAL_PLANS: (() => {
+      const PREFIX = 'PAYPAL_PLANS';
+      return {
+        ALL_KEY: () => `${PREFIX}:ALL`,
+      };
+    })(),
   };
 
   constructor(

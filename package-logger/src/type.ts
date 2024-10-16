@@ -1,3 +1,5 @@
+import DailyRotateFile = require('winston-daily-rotate-file');
+
 export type AnyObject<T = any> = {
   [key: string]: T;
 };
@@ -8,13 +10,7 @@ export type ErrorLogPattern = {
 };
 
 export type LoggerOptions = {
-  local?: {
-    dirname: string;
-    filename?: string;
-    datePattern?: string;
-    maxSize?: string;
-    maxFiles?: string;
-  };
+  local?: DailyRotateFile.DailyRotateFileTransportOptions;
   fluentd?: {
     tagPrefix: string;
     host: string;
