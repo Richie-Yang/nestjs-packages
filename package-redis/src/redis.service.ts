@@ -28,8 +28,26 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     SESSION: (() => {
       const PREFIX = 'SESSION';
       return {
-        AUTH_FRONT: (token: string) => `${PREFIX}:AUTH_FRONT:${token}`,
-        AUTH_BACK: (token: string) => `${PREFIX}:AUTH_BACK:${token}`,
+        AUTH_FRONT: (sessionToken: string) =>
+          `${PREFIX}:AUTH_FRONT:${sessionToken}`,
+        AUTH_BACK: (sessionToken: string) =>
+          `${PREFIX}:AUTH_BACK:${sessionToken}`,
+      };
+    })(),
+    REFRESH_SESSION: (() => {
+      const PREFIX = 'REFRESH_SESSION';
+      return {
+        AUTH_FRONT: (refreshToken: string) =>
+          `${PREFIX}:AUTH_FRONT:${refreshToken}`,
+        AUTH_BACK: (refreshToken: string) =>
+          `${PREFIX}:AUTH_BACK:${refreshToken}`,
+      };
+    })(),
+    REFRESH_FAMILY: (() => {
+      const PREFIX = 'REFRESH_FAMILY';
+      return {
+        AUTH_FRONT: (uuid: string) => `${PREFIX}:AUTH_FRONT:${uuid}`,
+        AUTH_BACK: (uuid: string) => `${PREFIX}:AUTH_BACK:${uuid}`,
       };
     })(),
     AUTH: (() => {
