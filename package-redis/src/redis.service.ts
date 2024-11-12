@@ -86,7 +86,10 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
 
     this.client.on('error', (error) => {
       console.log(`Redis: error occurs and detail is ${error}`);
-      process.exit(1);
+    });
+
+    this.client.on('reconnecting', () => {
+      console.log('Redis: attempting to reconnect...');
     });
 
     this.client.on('connect', () => {
@@ -109,7 +112,15 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     console.log(`Redis: disconnected and status is ${this.client.isReady}`);
   }
 
+  private async checkRedisReady() {
+    if (!this.client.isReady) {
+      console.log('Redis: failed to connect to Redis');
+      throw new Error('Redis connection failed');
+    }
+  }
+
   async set(key: string, value: AnyObject | string, ttl: number) {
+    await this.checkRedisReady();
     let stringifiedValue;
 
     if (typeof value === 'object') {
@@ -124,6 +135,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   }
 
   async get(key: string): Promise<AnyObject | null | void> {
+    await this.checkRedisReady();
     const value = await this.client.get(key);
     if (!value) return null;
     let parsedValue = null;
@@ -136,10 +148,12 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   }
 
   async del(key: string) {
+    await this.checkRedisReady();
     return this.client.del(key);
   }
 
   async getWithWildcard(pattern: string) {
+    await this.checkRedisReady();
     const result: { [key: string]: any } = {};
 
     for await (const key of this.client.scanIterator({ MATCH: pattern })) {

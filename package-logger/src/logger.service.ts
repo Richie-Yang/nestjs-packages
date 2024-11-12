@@ -128,7 +128,9 @@ export class LoggerService implements NestLoggerService {
         ...info,
         ...(this.asyncLocalStorage.getStore() as AnyObject),
         message: {
-          ...info.message,
+          ...(_.isObject(info.message)
+            ? info.message
+            : { detail: info.message }),
           function: _.get(info, 'message.function', ''),
         },
       };
