@@ -10,6 +10,7 @@ import { ErrorService, ModuleCode } from '@blackrelay/package-error';
 import { AuthenticateService } from './authenticate.service';
 import { RedisService } from '@blackrelay/package-redis';
 import { AuthSessionType } from './variables';
+import { AsyncLocalStorage } from '@blackrelay/package-als';
 
 export type AnyObject<T = any> = {
   [key: string]: T;
@@ -28,6 +29,8 @@ export class AuthFrontSessionGuard implements CanActivate {
     private authenticateService: AuthenticateService,
     @Inject(RedisService)
     private redisService: RedisService,
+    @Inject(AsyncLocalStorage)
+    private als: AsyncLocalStorage<any>,
   ) {}
 
   async canActivate(context: ExecutionContext) {
@@ -46,6 +49,9 @@ export class AuthFrontSessionGuard implements CanActivate {
     request.authData = userData;
     request.authAccessToken = token;
     request.authSessionType = AuthSessionType.FRONT;
+
+    const store = this.als.getStore();
+    if (store) store.userId = userData.authId;
     return true;
   }
 }
